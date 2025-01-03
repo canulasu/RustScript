@@ -4,7 +4,7 @@ import os
 parser = argparse.ArgumentParser(description="RustScript Interpreter")
 
 parser.add_argument('-e', '--execute', type=str, help='Execute a RustScript program.')
-parser.add_argument('-s', '--shell', action='store_true', help='Initiate the RustScript shell.')
+parser.add_argument('-v', '--version', action='store_true', help='RustScript version.')
 
 args = parser.parse_args()
 
@@ -47,9 +47,11 @@ if args.execute:
                         file.write('fn main() {\n')
                         file.write(f'    {command};\n')
                         file.write('}\n')
-                    os.system('rustc compile.rs')
-
-                    os.remove('compile.rs')
+                    os.system('rustc compile.rs > ' + os.devnull + ' 2>&1')
+                    try:
+                        os.remove('compile.rs')
+                    except:
+                        print('ERROR: Code Execution Failed: CODE ERROR')
                     os.system('./compile')
                     os.remove('compile') 
 
@@ -59,15 +61,21 @@ if args.execute:
     else:
         print('ERROR: Incorrect file type, RustScript files need to be .rscript')
 
-if args.shell:
+elif args.version:
+
+    print('RustScript v0.0.2')
+
+else:
 
     import os
 
     libraries = []
 
+    print('RustScript v0.0.2')
+
     while True:
 
-        command = input('rust >>> ')
+        command = input('>>> ')
 
         if command.startswith('use'):
             libraries.append(command.replace('use ', '').strip())
@@ -81,8 +89,12 @@ if args.shell:
                 file.write('fn main() {\n')
                 file.write(f'    {command}\n')
                 file.write('}\n')
-            os.system('rustc compile.rs')
 
-            os.remove('compile.rs')
+            os.system('rustc compile.rs > ' + os.devnull + ' 2>&1')
+
+            try:
+                os.remove('compile.rs')
+            except:
+                print('ERROR: Code Execution Failed: CODE ERROR')
             os.system('./compile')
             os.remove('compile')
